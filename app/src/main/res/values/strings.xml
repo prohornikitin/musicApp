@@ -30,4 +30,5 @@
     <string name="icon_visibility__hide">Hide</string>
     <string name="icon_visibility__show">Show</string>
     <string name="open_menu">Open menu</string>
+    <string name="tag_editor">Tag Editor</string>
 </resources>

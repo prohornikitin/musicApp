@@ -5,9 +5,8 @@ import com.example.musicapp.domain.data.SearchQuery
 
 interface SongSearch {
     fun search(
-        initialList: List<SongId>,
         query: SearchQuery,
     ): List<SongId>
 
-    fun listSongs(): List<SongId>
+    fun allSongs(): List<SongId>
 }

@@ -4,11 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,21 +15,12 @@ import com.example.musicapp.R
 
 @Composable
 fun CommonSettingsScreen(
-    openDrawer: () -> Unit,
     onSave: () -> Unit,
+    topBar: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Scaffold(
-        topBar = {
-            IconButton(
-                onClick = openDrawer
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = null,
-                )
-            }
-        },
+        topBar = topBar,
         bottomBar = {
             Button(
                 modifier = Modifier.fillMaxWidth(),

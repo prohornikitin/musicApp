@@ -1,11 +1,16 @@
 package com.example.musicapp.ui.nav
 
 import com.example.musicapp.R
+import com.example.musicapp.domain.data.SongId
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
     object Main : Route
+
+    @Serializable
+    data class TagEditor(@Contextual val id: SongId) : Route
 
     @Serializable
     object Settings : Route {
@@ -33,4 +38,5 @@ fun Route.getTitleRes() = when(this) {
     Route.Settings -> R.string.settings
     Route.Settings.SongCardStyle -> R.string.settings_card_style
     Route.Settings.Templates -> R.string.settings_template
+    is Route.TagEditor -> R.string.tag_editor
 }

@@ -19,6 +19,7 @@ import com.example.musicapp.domain.data.SongCardData
 import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.ui.reusable.FontConfigEditor
 import com.example.musicapp.ui.reusable.IntSlider
+import com.example.musicapp.ui.reusable.MenuOpenButton
 import com.example.musicapp.ui.reusable.Spinner
 import com.example.musicapp.ui.reusable.songcard.SongCard
 import com.example.musicapp.uistate.config.SongCardStyleEditorVm
@@ -30,7 +31,9 @@ fun SongCardStyleEditor(
     openDrawer: () -> Unit,
 ) {
     CommonSettingsScreen(
-        openDrawer = openDrawer,
+        topBar = {
+            MenuOpenButton(openDrawer)
+        },
         onSave = vm::onSave,
     ) {
         val iconBitmap =

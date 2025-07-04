@@ -11,7 +11,6 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -25,7 +24,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -36,8 +34,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.musicapp.ui.complex.MainScreen
 import com.example.musicapp.ui.complex.SongCardStyleEditor
+import com.example.musicapp.ui.complex.TagEditorScreen
 import com.example.musicapp.ui.complex.TemplateEditor
 import com.example.musicapp.ui.nav.Route
 import com.example.musicapp.ui.nav.getTitleRes
@@ -45,6 +45,7 @@ import com.example.musicapp.ui.nav.topLevelRoutes
 import com.example.musicapp.ui.theme.MusicAppTheme
 import com.example.musicapp.uistate.MainVm
 import com.example.musicapp.uistate.PlayerVm
+import com.example.musicapp.uistate.TagEditorVm
 import com.example.musicapp.uistate.config.SongCardStyleEditorVm
 import com.example.musicapp.uistate.config.TemplateEditorVm
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
     private val templateEditorVm by viewModels<TemplateEditorVm>()
     private val songCardStyleEditorVm by viewModels<SongCardStyleEditorVm>()
     private val playerVm by viewModels<PlayerVm>()
+    private val tagEditorVm by viewModels<TagEditorVm>()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +120,11 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, startDestination = Route.Main) {
                         composable<Route.Main> {
                             MainScreen(vm, playerVm, openDrawer)
+                        }
+                        composable<Route.TagEditor> { backStackEntry ->
+                            val route = backStackEntry.toRoute<Route.TagEditor>()
+                            tagEditorVm.loadForSong(route.id)
+                            TagEditorScreen(tagEditorVm)
                         }
                         navigation<Route.Settings>(startDestination = Route.Settings.SongCardStyle) {
                             composable<Route.Settings.SongCardStyle> {

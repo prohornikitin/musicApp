@@ -10,12 +10,13 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongId
-import com.example.musicapp.domain.logic.impure.iface.storage.read.GeneratedTemplatesStorage
 import com.example.musicapp.domain.logic.impure.iface.PlayerFactory
-import com.example.musicapp.domain.logic.impure.iface.storage.read.SongFileStorage
-import com.example.musicapp.domain.logic.impure.iface.storage.read.MetaStorage
+import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongFiles
 import com.example.musicapp.domain.data.SongCardData
-import com.example.musicapp.domain.logic.impure.impl.toMediaMetadata
+import com.example.musicapp.domain.logic.impure.iface.FormattedMetaStorage
+import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongCardDataStorage
+import com.example.musicapp.domain.logic.impure.impl.extractMediaMetadata
+import com.example.musicapp.domain.toNotNullMap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,9 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerVm @Inject constructor(
     private val playerFactory: PlayerFactory,
-    private val generatedTemplatesStorage: GeneratedTemplatesStorage,
-    private val fileStorage: SongFileStorage,
-    private val metaStorage: MetaStorage,
+    private val fileStorage: SongFiles,
+    private val songCardDataStorage: SongCardDataStorage,
+    private val metaStorage: FormattedMetaStorage,
 ) : ViewModel() {
     private lateinit var player: Player
 
@@ -38,19 +39,20 @@ class PlayerVm @Inject constructor(
     fun changePlaylist(playlist: List<SongId>) {
         viewModelScope.launch {
             player.clearMediaItems()
-            val filesMap = fileStorage.getFiles(playlist)
-            val meta = metaStorage.getMetadataFields(
+            val meta = metaStorage.getFields(
+                playlist,
                 setOf(
                     MetaKey.TITLE,
                     MetaKey.ARTIST,
                     MetaKey.ALBUM,
                     MetaKey.ALBUM_ARTIST,
-                )
+                ),
             )
+            val songCardData = songCardDataStorage.get(playlist).associateBy { it.id }
             player.addMediaItems(playlist.map {
                 MediaItem.Builder()
-                    .setMediaMetadata((meta[it] ?: emptyMap()).toMediaMetadata())
-                    .setUri(filesMap[it]!!.toUri())
+                    .setMediaMetadata(extractMediaMetadata(songCardData[it]!!, meta[it].toNotNullMap()))
+                    .setUri(fileStorage.getById(it)?.toUri())
                     .setMediaId(it.raw.toString())
                     .build()
             })
@@ -74,13 +76,7 @@ class PlayerVm @Inject constructor(
             player.addListener(object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                     currentSong = mediaItem?.mediaId?.toLongOrNull()?.let {
-                        val id = SongId(it)
-                        val templates = generatedTemplatesStorage.getSongCardText(id)
-                        SongCardData(
-                            id,
-                            templates.main,
-                            templates.sub,
-                        )
+                        songCardDataStorage.get(SongId(it))
                     }
                 }
 

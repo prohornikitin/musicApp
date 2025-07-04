@@ -8,18 +8,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
-import com.example.musicapp.domain.logic.impure.iface.storage.read.TemplatesConfig
-import com.example.musicapp.domain.logic.impure.iface.storage.write.integrityGuaranteed.TemplateUpdate
+import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.TemplatesStorage
 import com.example.musicapp.domain.logic.pure.parseTemplate
 import com.example.musicapp.ui.annotateTemplate
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
-@HiltViewModel
-class TemplateEditorVm @Inject constructor(
-    private val templateUpdate: TemplateUpdate,
-    templateStorage: TemplatesConfig,
-) : ViewModel() {
+class TemplateEditorVm constructor(
+    private val updateCardTemplates: UpdateCardTemplates,
+    private val templates: TemplatesStorage
+) : ViewModel(), TemplatesStorage.ChangeCallback {
     var mainTemplate by mutableStateOf(AnnotatedString(""))
         private set
 
@@ -32,23 +28,26 @@ class TemplateEditorVm @Inject constructor(
     )
 
     init {
-        val value = templateStorage.getTemplates()
-        onMainTextChange(value.main)
-        onBottomTemplateChange(value.sub)
-    }
+        templates.addChangeCallback(this)
+        addCloseable { templates.removeChangeCallback(this) }
 
-    fun onMainTextChange(str: String) {
-        mainTemplate = annotateTemplate(str, metaStyle)
-    }
-
-    fun onBottomTemplateChange(str: String) {
-        subTemplate = annotateTemplate(str, metaStyle)
+        val (main, bottom) = templates.get()
+        onMainTemplateChange(main)
+        onBottomTemplateChanged(bottom)
     }
 
     fun onSave() {
-        templateUpdate.updateTemplates(
+        updateCardTemplates(
             parseTemplate(mainTemplate.text),
             parseTemplate(subTemplate.text),
         )
+    }
+
+    override fun onMainTemplateChange(text: String) {
+        mainTemplate = annotateTemplate(text, metaStyle)
+    }
+
+    override fun onBottomTemplateChanged(text: String) {
+        subTemplate = annotateTemplate(text, metaStyle)
     }
 }

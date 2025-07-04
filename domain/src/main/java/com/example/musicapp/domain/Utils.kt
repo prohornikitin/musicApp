@@ -82,5 +82,6 @@ fun String.toColorOrNull(): RgbaColor? {
     return null
 }
 
-fun String.escapeSingleQuotesSql(): String = replace("'", "''")
+fun String.escapeSqlString(): String = replace("'", "''")
 
+fun <K, V> Map<K, V>?.toNotNullMap() = this ?: emptyMap()

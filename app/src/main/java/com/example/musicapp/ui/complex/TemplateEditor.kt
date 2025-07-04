@@ -2,10 +2,7 @@ package com.example.musicapp.ui.complex
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import com.example.musicapp.R
+import com.example.musicapp.ui.reusable.MenuOpenButton
 import com.example.musicapp.uistate.config.TemplateEditorVm
 
 @Composable
@@ -22,14 +20,16 @@ fun TemplateEditor(
     modifier: Modifier = Modifier
 ) {
     CommonSettingsScreen(
-        openDrawer = openDrawer,
+        topBar = {
+            MenuOpenButton(openDrawer)
+        },
         onSave = vm::onSave,
     ) {
         Column(modifier) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = vm.mainTemplate.text,
-                onValueChange = vm::onMainTextChange,
+                onValueChange = vm::onMainTemplateChange,
                 visualTransformation = {
                     TransformedText(
                         vm.mainTemplate,
@@ -41,7 +41,7 @@ fun TemplateEditor(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = vm.subTemplate.text,
-                onValueChange = vm::onBottomTemplateChange,
+                onValueChange = vm::onBottomTemplateChanged,
                 visualTransformation = {
                     TransformedText(
                         vm.subTemplate,

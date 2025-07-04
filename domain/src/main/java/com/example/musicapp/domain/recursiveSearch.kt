@@ -1,7 +1,6 @@
 package com.example.musicapp.domain
 
 import java.io.File
-import java.net.URLConnection
 import java.util.ArrayDeque
 import java.util.Queue
 
@@ -26,5 +25,6 @@ fun recursiveSearchFiles(dir: File): List<File> {
     return files
 }
 
-fun recursiveSearchMusicFiles(dir: File): List<File> =
-    recursiveSearchFiles(dir).filter(::isAudio)
+fun recursiveSearchMusicFiles(dirs: List<File>): List<File> = dirs
+    .flatMap { recursiveSearchFiles(it) }
+    .filter(::isAudio)
