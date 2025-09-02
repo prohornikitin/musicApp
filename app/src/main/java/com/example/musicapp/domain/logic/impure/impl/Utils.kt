@@ -1,9 +1,11 @@
 package com.example.musicapp.domain.logic.impure.impl
 
 import android.os.Bundle
+import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongCardData
+import com.example.musicapp.domain.data.SongId
 
 fun extractMediaMetadata(songCard: SongCardData, meta: Map<MetaKey, String>) = MediaMetadata.Builder()
     .setTitle(meta[MetaKey.Companion.TITLE])
@@ -16,3 +18,6 @@ fun extractMediaMetadata(songCard: SongCardData, meta: Map<MetaKey, String>) = M
         putString("bottomText", songCard.bottomText)
     })
     .build()
+
+val MediaItem.songId: SongId?
+    get() = mediaId.toLongOrNull()?.let(::SongId)

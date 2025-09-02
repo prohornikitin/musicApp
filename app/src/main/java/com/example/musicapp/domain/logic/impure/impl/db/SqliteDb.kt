@@ -18,7 +18,7 @@ import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSql
 import javax.inject.Inject
 
 
-abstract class SqliteDb @Inject constructor(
+abstract class SqliteDb constructor(
     context: Context,
     db: String,
     val sql: MainDbSql,
@@ -34,17 +34,27 @@ abstract class SqliteDb @Inject constructor(
 
     override fun onCreate(db: SQLiteDatabase?) {
         sql.init().forEach {
-            executeWithDbOverride(it, db)
+            executeWithDbOverride(it, db).getOrThrow()
         }
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         sql.upgrade(oldVersion).forEach {
-            executeWithDbOverride(it, db)
+            executeWithDbOverride(it, db).getOrThrow()
         }
     }
 
-    private fun <T> executeWithDbOverride(query: SqlDbQuery<T>, overrideDb: SQLiteDatabase? = null): T {
+    private fun <T> executeWithDbOverride(query: SqlDbQuery<T>, overrideDb: SQLiteDatabase? = null): Result<T> {
+        @Suppress("UNCHECKED_CAST")
+        return when(query) {
+            is SelectListDbQuery<*> -> selectMany(query, overrideDb)
+            is SelectOneDbQuery<*> -> selectOne(query, overrideDb)
+            is InsertDbQuery -> insert(query, overrideDb)
+            is SimpleWriteDbQuery -> executeSimple(query, overrideDb)
+        } as Result<T>
+    }
+
+    private fun <T> executeWithDbOverrideAndFailureCatch(query: SqlDbQuery<T>, overrideDb: SQLiteDatabase? = null): T {
         @Suppress("UNCHECKED_CAST")
         return when(query) {
             is SelectListDbQuery<*> -> selectMany(query, overrideDb).onFailure(logger::error).getOrDefault(emptyList())
@@ -54,7 +64,8 @@ abstract class SqliteDb @Inject constructor(
         } as T
     }
 
-    override fun <T> execute(query: SqlDbQuery<T>) = executeWithDbOverride(query)
+    override fun <T> execute(query: SqlDbQuery<T>): T = executeWithDbOverrideAndFailureCatch(query)
+    override fun <T> executeOrFail(query: SqlDbQuery<T>): Result<T> = executeWithDbOverride(query)
 
     private fun <T> selectMany(query: SelectListDbQuery<T>, overrideDb: SQLiteDatabase?): Result<List<T>> = runCatching {
         val db = overrideDb ?: readableDatabase

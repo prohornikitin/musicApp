@@ -9,6 +9,7 @@ import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.domain.escapeSqlString
 import com.example.musicapp.domain.joinToSb
 import com.example.musicapp.domain.logic.pure.query.Arg
+import com.example.musicapp.domain.logic.pure.query.InsertDbQuery
 import com.example.musicapp.domain.logic.pure.query.SelectListDbQuery
 import com.example.musicapp.domain.logic.pure.query.SelectOneDbQuery
 import com.example.musicapp.domain.logic.pure.query.SimpleWriteDbQuery
@@ -168,13 +169,13 @@ object MainDbSql : DbSetupSql {
         { SongId(getLong(0)) }
     )
 
-    val getAllSongIds = SelectListDbQuery<Long>(
+    val getAllSongIds = SelectListDbQuery<SongId>(
         "SELECT ${Tables.Song.id} FROM ${Tables.Song}",
-        { getLong(0) }
+        { SongId(getLong(0)) }
     )
 
     private val getFileBySongIdWithoutArgs = SelectOneDbQuery<String>(
-        "SELECT ${Tables.Song.musicFileId} FROM ${Tables.Song} WHERE ${Tables.Song.id}=?",
+        "SELECT ${Tables.Song.musicFilePath} FROM ${Tables.Song} WHERE ${Tables.Song.id}=?",
         { getString(0) },
     )
     fun getFileBySongId(id: SongId) = getFileBySongIdWithoutArgs.withArgs(
@@ -189,7 +190,7 @@ object MainDbSql : DbSetupSql {
                 append("SELECT ")
                 append(Tables.Song.id)
                 append(',')
-                append(Tables.Song.musicFileId)
+                append(Tables.Song.musicFilePath)
                 append(" FROM ")
                 append(Tables.Song)
                 append(" WHERE ")
@@ -349,8 +350,31 @@ object MainDbSql : DbSetupSql {
         }
     }
 
-    val insertIcon = "INSERT OR IGNORE INTO ${Tables.IconFile} (${Tables.IconFile.data}) VALUES (?); "
-    val getIconIdByData = "SELECT ${Tables.IconFile.id} FROM ${Tables.IconFile} WHERE ${Tables.IconFile.data}=?"
+
+    private val insertIconWithoutArgs = InsertDbQuery(
+        "INSERT OR IGNORE INTO ${Tables.IconFile} (${Tables.IconFile.data}) VALUES (?)"
+    )
+    fun insertIcon(iconData: ByteArray) = insertIconWithoutArgs.withArgs(
+        Arg.of(iconData)
+    )
+
+    private val findIconIdByContentWithoutArgs = SelectOneDbQuery(
+        "SELECT ${Tables.IconFile.id} FROM ${Tables.IconFile} WHERE ${Tables.IconFile.data}=?",
+        { getLong(0) }
+    )
+    fun findIconIdByContent(content: ByteArray) = findIconIdByContentWithoutArgs.withArgs(
+        Arg.of(content)
+    )
+
+    private val insertSongWithoutArgs = InsertDbQuery(
+        "INSERT OR IGNORE INTO ${Tables.Song} (${Tables.Song.musicFilePath}) VALUES (?)"
+    )
+    fun insertSongFile(filePath: String) = insertSongWithoutArgs.withArgs(
+        Arg.of(filePath)
+    )
+
+//    val getIconIdByData = "SELECT ${Tables.IconFile.id} FROM ${Tables.IconFile} WHERE ${Tables.IconFile.data}=?"
+
 
     private val updateSongIconWithoutArgs = SimpleWriteDbQuery(
         "UPDATE ${Tables.Song} SET ${Tables.Song.iconId}=? WHERE ${Tables.Song.id}=?",
@@ -359,4 +383,12 @@ object MainDbSql : DbSetupSql {
         Arg.Companion.of(iconId),
         Arg.Companion.of(songId.raw)
     )
+
+    private val clearSongMetaWithoutArgs = SimpleWriteDbQuery(
+        "DELETE FROM ${Tables.Song} WHERE ${Tables.Song.id}=?"
+    )
+    fun clearSongMeta(songId: SongId) = clearSongMetaWithoutArgs.withArgs(
+        Arg.of(songId.raw)
+    )
+
 }

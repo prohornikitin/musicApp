@@ -15,7 +15,7 @@ import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.domain.logic.impure.iface.SongSearch
 import com.example.musicapp.domain.isAudio
 import com.example.musicapp.domain.recursiveSearchFiles
-import com.example.musicapp.domain.logic.impure.iface.SongFileLoad
+import com.example.musicapp.domain.logic.impure.iface.SongFileImport
 import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongCardDataStorage
 import com.example.musicapp.domain.logic.pure.parseSearchQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
 class MainVm @Inject constructor(
     private val search: SongSearch,
     private val songCardDataStorage: SongCardDataStorage,
-    private val songFileLoad: SongFileLoad,
+    private val songFileImport: SongFileImport,
 ) : ViewModel() {
     private var loadingObjects by mutableIntStateOf(0)
     val isLoading by derivedStateOf { loadingObjects == 0 }
@@ -110,7 +110,7 @@ class MainVm @Inject constructor(
         val audioFiles = recursiveSearchFiles(musicPath)
             .filter { isAudio(it) }
         audioFiles.forEach {
-            songFileLoad.loadNewIfNotExists(it)
+            songFileImport.importIfFileNotExists(it)
         }
     }
 

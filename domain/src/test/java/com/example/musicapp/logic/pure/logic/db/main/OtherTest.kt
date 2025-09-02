@@ -1,6 +1,5 @@
 package com.example.musicapp.logic.pure.logic.db.main
 
-import com.example.config.SongCardText
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.domain.logic.pure.query.Arg
@@ -31,7 +30,7 @@ class OtherTest {
     @Test
     fun getFilesPathsBySongId_2Ids_sql() {
         assertCharSeqEquals(
-            "SELECT ${Tables.Song.id},${Tables.Song.musicFileId} FROM ${Tables.Song} WHERE ${Tables.Song.id} IN (-2,10)",
+            "SELECT ${Tables.Song.id},${Tables.Song.musicFilePath} FROM ${Tables.Song} WHERE ${Tables.Song.id} IN (-2,10)",
             MainDbSql.getFilesPathsBySongId(listOf(-2L, 10L).map(::SongId)).sql,
         )
     }

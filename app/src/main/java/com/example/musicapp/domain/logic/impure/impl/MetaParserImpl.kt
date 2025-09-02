@@ -18,7 +18,7 @@ class MetaParserImpl @Inject constructor(
                 .mapKeys { metaKeyMappingStorage.getByKey(it.key) }
                 .mapValues { it.value.joinToString(",") }
             val icon = meta?.pictures?.firstOrNull()?.data
-            return Metadata(properties, icon)
+            Metadata(properties, icon)
         }
     }
 }

@@ -10,7 +10,7 @@ fun interface MemoryCache {
             mCaches.add(c)
         }
 
-        fun cleanupAll() {
+        fun cleanupAll() = synchronized(this) {
             mCaches.forEach {
                 it.clearTheCache()
             }

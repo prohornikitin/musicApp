@@ -5,13 +5,13 @@ import com.example.musicapp.domain.logic.pure.sql.Table
 object Tables {
     object Song : Table("song") {
         val id = col("song_id")
-        val musicFileId = col("music_file_id")
+        val musicFilePath = col("music_file_id")
         val iconId = col("icon_id")
 
         override val createSql: String =
             "CREATE TABLE $Song (" +
                 "$id INTEGER PRIMARY KEY," +
-                "$musicFileId INTEGER NOT NULL UNIQUE," +
+                "$musicFilePath INTEGER NOT NULL UNIQUE," +
                 "$iconId INTEGER," +
                 "FOREIGN KEY ($iconId) REFERENCES $IconFile (${IconFile.id})" +
             ")"

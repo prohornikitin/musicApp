@@ -3,7 +3,7 @@ package com.example.musicapp.domain.logic.pure
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongId
 
-fun formatMultiValueMetas(meta: List<Pair<MetaKey, String>>, delimiter: String): Map<MetaKey, String> {
+fun mergeMultiValueMetas(meta: List<Pair<MetaKey, String>>, delimiter: String): Map<MetaKey, String> {
     val result = mutableMapOf<MetaKey, String>()
     meta.forEach {
         val key = it.first

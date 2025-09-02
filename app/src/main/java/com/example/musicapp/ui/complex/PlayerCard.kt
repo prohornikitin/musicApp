@@ -27,7 +27,7 @@ fun PlayerCard(
     modifier: Modifier = Modifier,
     style: SongCardStyle = SongCardStyle(),
     playing: Boolean = false,
-    onPlayClicked: ()->Unit = {},
+    onPlayClicked: () -> Unit = {},
     elevation: CardElevation = CardDefaults.cardElevation(),
 ) {
     Card(

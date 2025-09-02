@@ -13,9 +13,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.config.SongCardStyle
 import com.example.config.SongCardStyle.FontConfig
 import com.example.musicapp.ui.reusable.MenuOpenButton
@@ -74,15 +76,16 @@ fun MainScreen(vm: MainVm, playerVm: PlayerVm, openDrawer: () -> Unit) {
                     }
                 }
             }
-            if (playerVm.currentSong != null) {
+            val currentSongCard by playerVm.currentSongCard.collectAsStateWithLifecycle()
+            if (currentSongCard != null) {
                 PlayerCard(
-                    playerVm.currentSong!!,
+                    currentSongCard!!,
                     Modifier
                         .wrapContentHeight(Alignment.Bottom, unbounded = true)
                         .fillMaxWidth(),
                     songCardStyle,
-                    playerVm.isPlaying,
-                    onPlayClicked = playerVm::togglePause,
+                    playerVm.isPlaying.collectAsStateWithLifecycle().value,
+                    onPlayClicked = playerVm::togglePlayPause,
                 )
             }
         }
