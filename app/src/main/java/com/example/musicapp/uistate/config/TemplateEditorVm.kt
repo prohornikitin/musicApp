@@ -8,14 +8,18 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
-import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.TemplatesStorage
+import com.example.musicapp.domain.logic.impure.CardTemplatesEdit
+import com.example.musicapp.domain.logic.impure.iface.storage.l2.read.TemplatesConfigRead
 import com.example.musicapp.domain.logic.pure.parseTemplate
 import com.example.musicapp.ui.annotateTemplate
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class TemplateEditorVm constructor(
-    private val updateCardTemplates: UpdateCardTemplates,
-    private val templates: TemplatesStorage
-) : ViewModel(), TemplatesStorage.ChangeCallback {
+@HiltViewModel
+class TemplateEditorVm @Inject constructor(
+    private val cardTemplatesEdit: CardTemplatesEdit,
+    private val templates: TemplatesConfigRead
+) : ViewModel() {
     var mainTemplate by mutableStateOf(AnnotatedString(""))
         private set
 
@@ -28,26 +32,23 @@ class TemplateEditorVm constructor(
     )
 
     init {
-        templates.addChangeCallback(this)
-        addCloseable { templates.removeChangeCallback(this) }
-
-        val (main, bottom) = templates.get()
-        onMainTemplateChange(main)
-        onBottomTemplateChanged(bottom)
+        val (main, bottom) = templates.getTemplates()
+        onMainTemplateChange(main.toString())
+        onBottomTemplateChanged(bottom.toString())
     }
 
     fun onSave() {
-        updateCardTemplates(
+        cardTemplatesEdit.update(
             parseTemplate(mainTemplate.text),
             parseTemplate(subTemplate.text),
         )
     }
 
-    override fun onMainTemplateChange(text: String) {
+    fun onMainTemplateChange(text: String) {
         mainTemplate = annotateTemplate(text, metaStyle)
     }
 
-    override fun onBottomTemplateChanged(text: String) {
+    fun onBottomTemplateChanged(text: String) {
         subTemplate = annotateTemplate(text, metaStyle)
     }
 }

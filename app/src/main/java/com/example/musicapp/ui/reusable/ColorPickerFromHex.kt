@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.config.RgbaColor
+import com.example.musicapp.domain.data.RgbaColor
 import com.example.musicapp.domain.toColorOrNull
 import com.example.musicapp.domain.toHexStr
 import com.example.musicapp.R

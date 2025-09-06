@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.config.SongCardStyle
+import com.example.musicapp.domain.data.SongCardStyle
 import com.example.musicapp.ui.toComposeColor
 import com.example.musicapp.ui.toComposeFontFamily
 import com.example.musicapp.ui.toComposeFontStyle

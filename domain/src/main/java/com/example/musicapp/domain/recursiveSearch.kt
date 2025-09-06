@@ -28,3 +28,4 @@ fun recursiveSearchFiles(dir: File): List<File> {
 fun recursiveSearchMusicFiles(dirs: List<File>): List<File> = dirs
     .flatMap { recursiveSearchFiles(it) }
     .filter(::isAudio)
+

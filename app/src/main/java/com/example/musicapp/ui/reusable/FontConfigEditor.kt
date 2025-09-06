@@ -6,9 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.LocaleList
-import com.example.config.FontFamily
-import com.example.config.FontStyle
-import com.example.config.SongCardStyle.FontConfig
+import com.example.musicapp.domain.data.FontFamily
+import com.example.musicapp.domain.data.FontStyle
+import com.example.musicapp.domain.data.SongCardStyle.FontConfig
 import com.example.musicapp.R
 
 

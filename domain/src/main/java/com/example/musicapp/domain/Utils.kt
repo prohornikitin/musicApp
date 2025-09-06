@@ -1,6 +1,13 @@
 package com.example.musicapp.domain
 
-import com.example.config.RgbaColor
+import com.example.musicapp.domain.data.RgbaColor
+import org.apache.commons.codec.digest.DigestUtils
+import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+
 
 fun StringBuilder.surroundedBy(surrounded: String, block: StringBuilder.() -> Unit) {
     append(surrounded)

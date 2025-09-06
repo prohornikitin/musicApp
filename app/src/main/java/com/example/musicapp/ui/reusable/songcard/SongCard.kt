@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.config.SongCardStyle
+import com.example.musicapp.domain.data.SongCardStyle
 import com.example.musicapp.domain.data.SongCardData
 import com.example.musicapp.ui.preview.SongCardDataProvider
 

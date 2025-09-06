@@ -3,13 +3,13 @@ package com.example.musicapp.domain.logic.impure.impl.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.example.musicapp.domain.logic.impure.impl.logger.Logger
-import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSql
-import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSql.upgrade
+import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSetup
+import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSetup.upgrade
 
 class MainDb private constructor(
     context: Context,
     logger: Logger
-) : SqliteDb(context, "songs.db", MainDbSql, logger) {
+) : SqliteDb(context, "songs.db", MainDbSetup, logger) {
     companion object {
         private var instance: MainDb? = null
 

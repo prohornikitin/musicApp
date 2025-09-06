@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.config.SongCardStyle.IconVisibility
-import com.example.config.SongCardStyle.IconVisibility.*
+import com.example.musicapp.domain.data.SongCardStyle.IconVisibility
+import com.example.musicapp.domain.data.SongCardStyle.IconVisibility.*
 
 @Preview
 @Composable

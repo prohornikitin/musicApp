@@ -1,16 +1,33 @@
 package com.example.musicapp.ui.nav
 
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
+import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavType
+import androidx.navigation.toRoute
 import com.example.musicapp.R
 import com.example.musicapp.domain.data.SongId
+import kotlinx.parcelize.RawValue
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlin.reflect.typeOf
 
-sealed interface Route {
+sealed interface Route : java.io.Serializable{
     @Serializable
     object Main : Route
 
     @Serializable
-    data class TagEditor(@Contextual val id: SongId) : Route
+    data class TagEditor(val id: Long) : Route {
+        companion object {
+            val typeMap = mapOf(typeOf<TagEditor>() to NavType.SerializableType(TagEditor::class.java))
+
+            fun from(savedStateHandle: SavedStateHandle) =
+                savedStateHandle.toRoute<TagEditor>(typeMap)
+        }
+    }
 
     @Serializable
     object Settings : Route {
@@ -20,6 +37,23 @@ sealed interface Route {
         @Serializable
         object SongCardStyle : Route
     }
+}
+
+inline fun <reified T : Parcelable> parcelableType(
+    isNullableAllowed: Boolean = false,
+    json: Json = Json,
+) = object : NavType<T>(isNullableAllowed = isNullableAllowed) {
+    override fun get(bundle: Bundle, key: String) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle.getParcelable(key, T::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            bundle.getParcelable(key)
+        }
+
+    override fun parseValue(value: String): T = json.decodeFromString(value)
+    override fun serializeAsValue(value: T): String = Uri.encode(json.encodeToString(value))
+    override fun put(bundle: Bundle, key: String, value: T) = bundle.putParcelable(key, value)
 }
 
 data class TopLevelRoute<T : Route>(val route: T, val children: List<Route>)

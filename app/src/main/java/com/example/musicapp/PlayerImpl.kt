@@ -10,14 +10,14 @@ import androidx.media3.common.Player.STATE_BUFFERING
 import androidx.media3.common.Player.STATE_READY
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongId
-import com.example.musicapp.domain.logic.impure.iface.FormattedMetaStorage
+import com.example.musicapp.domain.logic.impure.iface.FormattedMetaRead
 import com.example.musicapp.domain.logic.impure.iface.player.Player
 import com.example.musicapp.domain.logic.impure.iface.player.MusicPlayerState
 import com.example.musicapp.domain.logic.impure.iface.player.NextSongStrategy
 import com.example.musicapp.domain.logic.impure.iface.player.PlaybackState
 import com.example.musicapp.domain.logic.impure.iface.player.RepeatMode
-import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongCardDataStorage
-import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongFiles
+import com.example.musicapp.domain.logic.impure.iface.storage.l1.read.SongCardTextStorage
+import com.example.musicapp.domain.logic.impure.iface.storage.l1.read.SongFiles
 import com.example.musicapp.domain.logic.impure.impl.extractMediaMetadata
 import com.example.musicapp.domain.logic.impure.impl.songId
 import com.example.musicapp.domain.toNotNullMap
@@ -25,15 +25,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 
 class PlayerImpl(
     private val getPlatformPlayer: suspend () -> androidx.media3.common.Player,
-    private val metaStorage: FormattedMetaStorage,
-    private val songCardDataStorage: SongCardDataStorage,
+    private val metaStorage: FormattedMetaRead,
+    private val songCardTextStorage: SongCardTextStorage,
     private val fileStorage: SongFiles,
 ) : Player {
     private var player: androidx.media3.common.Player? = null
@@ -42,14 +42,12 @@ class PlayerImpl(
 
     private fun usePPlayer(f: androidx.media3.common.Player.() -> Unit) {
         scope.launch {
-            synchronized(this@PlayerImpl) {
-                if (player == null) {
-                    runBlocking {
-                        player = getPlatformPlayer()
-                    }
-                }
+            if (player == null) {
+                player = getPlatformPlayer()
             }
-            player!!.f()
+            withContext(Dispatchers.Main) {
+                player!!.f()
+            }
         }
     }
 
@@ -95,7 +93,7 @@ class PlayerImpl(
                 MetaKey.ALBUM_ARTIST,
             ),
         )
-        val songCardData = songCardDataStorage.get(new).associateBy { it.id }
+        val songCardData = songCardTextStorage.get(new).associateBy { it.id }
         setMediaItems(new.map {
             MediaItem.Builder()
                 .setMediaMetadata(extractMediaMetadata(songCardData[it]!!, meta[it].toNotNullMap()))
@@ -143,52 +141,50 @@ class PlayerImpl(
 
     init {
         usePPlayer {
-            usePPlayer {
-                addListener(object: androidx.media3.common.Player.Listener {
-                    override fun onPlaybackStateChanged(playbackState: Int) {
+            addListener(object: androidx.media3.common.Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    updatePlaybackState()
+                }
+
+                override fun onRepeatModeChanged(repeatMode: Int) {
+                    nextSongStrategy.value = nextSongStrategy.value.copy(repeatMode.asRepeatModeEnum())
+                }
+
+                override fun onShuffleModeEnabledChanged(enabled: Boolean) {
+                    nextSongStrategy.value = nextSongStrategy.value.copy(shuffle = enabled)
+                }
+
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    updatePlaybackState()
+                    positionListeners.forEach { it.positionChanged(currentPosition.milliseconds) }
+                }
+
+                override fun onIsLoadingChanged(isLoading: Boolean) {
+                    updatePlaybackState()
+                }
+
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    updatePlaybackState()
+                }
+
+                override fun onPositionDiscontinuity(
+                    oldPosition: PositionInfo,
+                    newPosition: PositionInfo,
+                    reason: Int
+                ) {
+                    if(getMediaItemAt(oldPosition.mediaItemIndex).songId != getMediaItemAt(newPosition.mediaItemIndex).songId) {
                         updatePlaybackState()
+                        positionListeners.forEach { it.positionChanged(newPosition.positionMs.milliseconds) }
                     }
-
-                    override fun onRepeatModeChanged(repeatMode: Int) {
-                        nextSongStrategy.value = nextSongStrategy.value.copy(repeatMode.asRepeatModeEnum())
+                    val old = oldPosition.positionMs.milliseconds
+                    val new = oldPosition.positionMs.milliseconds
+                    val diff = (new - old).absoluteValue
+                    if (diff > positionUpdatePrecision) {
+                        positionListeners.forEach { it.positionChanged(new) }
                     }
-
-                    override fun onShuffleModeEnabledChanged(enabled: Boolean) {
-                        nextSongStrategy.value = nextSongStrategy.value.copy(shuffle = enabled)
-                    }
-
-                    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                        updatePlaybackState()
-                        positionListeners.forEach { it.positionChanged(currentPosition.milliseconds) }
-                    }
-
-                    override fun onIsLoadingChanged(isLoading: Boolean) {
-                        updatePlaybackState()
-                    }
-
-                    override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        updatePlaybackState()
-                    }
-
-                    override fun onPositionDiscontinuity(
-                        oldPosition: PositionInfo,
-                        newPosition: PositionInfo,
-                        reason: Int
-                    ) {
-                        if(getMediaItemAt(oldPosition.mediaItemIndex).songId != getMediaItemAt(newPosition.mediaItemIndex).songId) {
-                            updatePlaybackState()
-                            positionListeners.forEach { it.positionChanged(newPosition.positionMs.milliseconds) }
-                        }
-                        val old = oldPosition.positionMs.milliseconds
-                        val new = oldPosition.positionMs.milliseconds
-                        val diff = (new - old).absoluteValue
-                        if (diff > positionUpdatePrecision) {
-                            positionListeners.forEach { it.positionChanged(new) }
-                        }
-                    }
-                })
-            }
-            playlist.value = (0..mediaItemCount).mapNotNull {
+                }
+            })
+            playlist.value = (0..mediaItemCount-1).mapNotNull {
                 getMediaItemAt(it).songId
             }
             nextSongStrategy.value = NextSongStrategy(repeatMode.asRepeatModeEnum(), shuffleModeEnabled)

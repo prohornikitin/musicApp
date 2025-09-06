@@ -14,14 +14,13 @@ import com.example.musicapp.domain.logic.pure.query.SelectListDbQuery
 import com.example.musicapp.domain.logic.pure.query.SelectOneDbQuery
 import com.example.musicapp.domain.logic.pure.query.SimpleWriteDbQuery
 import com.example.musicapp.domain.logic.pure.query.SqlDbQuery
-import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSql
-import javax.inject.Inject
+import com.example.musicapp.domain.logic.pure.sql.mainDb.MainDbSetup
 
 
 abstract class SqliteDb constructor(
     context: Context,
     db: String,
-    val sql: MainDbSql,
+    val sql: MainDbSetup,
     logger: Logger,
 ) : SQLiteOpenHelper(context, db, null, sql.currentVersion), DbQueryInterpreter {
 
@@ -46,22 +45,26 @@ abstract class SqliteDb constructor(
 
     private fun <T> executeWithDbOverride(query: SqlDbQuery<T>, overrideDb: SQLiteDatabase? = null): Result<T> {
         @Suppress("UNCHECKED_CAST")
-        return when(query) {
+        return (when(query) {
             is SelectListDbQuery<*> -> selectMany(query, overrideDb)
             is SelectOneDbQuery<*> -> selectOne(query, overrideDb)
             is InsertDbQuery -> insert(query, overrideDb)
             is SimpleWriteDbQuery -> executeSimple(query, overrideDb)
-        } as Result<T>
+        } as Result<T>).also {
+            logger.debug { "Executed $query with result $it" }
+        }
     }
 
     private fun <T> executeWithDbOverrideAndFailureCatch(query: SqlDbQuery<T>, overrideDb: SQLiteDatabase? = null): T {
         @Suppress("UNCHECKED_CAST")
-        return when(query) {
+        return (when(query) {
             is SelectListDbQuery<*> -> selectMany(query, overrideDb).onFailure(logger::error).getOrDefault(emptyList())
             is SelectOneDbQuery<*> -> selectOne(query, overrideDb).onFailure(logger::error).getOrNull()
             is InsertDbQuery -> insert(query, overrideDb).onFailure(logger::error).getOrNull()
             is SimpleWriteDbQuery -> executeSimple(query, overrideDb).onFailure(logger::error).getOrDefault(Unit)
-        } as T
+        } as T).also {
+            logger.debug { "Executed $query with result $it" }
+        }
     }
 
     override fun <T> execute(query: SqlDbQuery<T>): T = executeWithDbOverrideAndFailureCatch(query)
@@ -96,10 +99,11 @@ abstract class SqliteDb constructor(
         var cursor: Cursor? = null
         try {
             cursor = NullHack.callSelect(db, cursorFactory, query.sql.toString())
-            val rowWrapper = CursorRowWrapper(cursor)
-            assert(cursor.count <= 1)
-            return@runCatching if(cursor.count == 1) {
-                query.rowProcess(rowWrapper)
+            val count = cursor.count
+            assert(count <= 1)
+            return@runCatching if(count == 1) {
+                cursor.moveToFirst()
+                query.rowProcess(CursorRowWrapper(cursor))
             } else {
                 null
             }

@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.example.config.SongCardStyle
+import com.example.musicapp.domain.data.SongCardStyle
 import com.example.musicapp.domain.data.SongCardData
 import com.example.musicapp.ui.preview.SongCardDataProvider
 import com.example.musicapp.ui.reusable.songcard.SongCard

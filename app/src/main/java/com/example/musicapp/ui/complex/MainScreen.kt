@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.config.SongCardStyle
-import com.example.config.SongCardStyle.FontConfig
+import com.example.musicapp.domain.data.SongCardStyle
+import com.example.musicapp.domain.data.SongCardStyle.FontConfig
 import com.example.musicapp.ui.reusable.MenuOpenButton
 import com.example.musicapp.ui.reusable.SearchBar
 import com.example.musicapp.ui.reusable.songcard.SongItem
@@ -54,28 +54,29 @@ fun MainScreen(vm: MainVm, playerVm: PlayerVm, openDrawer: () -> Unit) {
             PullToRefreshBox(
                 modifier = Modifier.weight(1f),
                 isRefreshing = vm.isLoading,
-                onRefresh = vm::reload,
+                onRefresh = vm::refresh,
             ) {
                 LazyColumn(Modifier) {
                     items(
-                        items = vm.cards,
-                        key = { it.id.raw },
+                        items = vm.songs,
+                        key = { it.raw },
                     ) { song ->
                         SongItem(
-                            data = song,
+                            data = vm.loadCard(song).collectAsStateWithLifecycle().value,
                             style = songCardStyle,
                             onOptionClick = {
-                                vm.execSongOption(song.id, it)
+                                vm.execSongOption(song, it)
                             },
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable(onClick = {
-                                    playerVm.changePlaylist(vm.getPlaylistFrom(song.id))
+                                    playerVm.changePlaylist(vm.getPlaylistFrom(song))
                                 })
                         )
                     }
                 }
             }
+
             val currentSongCard by playerVm.currentSongCard.collectAsStateWithLifecycle()
             if (currentSongCard != null) {
                 PlayerCard(

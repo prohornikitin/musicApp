@@ -11,15 +11,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicapp.data.SongOption
 import com.example.musicapp.data.SongOption.*
+import com.example.musicapp.domain.data.SongCardData
 import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.domain.logic.impure.iface.SongSearch
 import com.example.musicapp.domain.isAudio
 import com.example.musicapp.domain.recursiveSearchFiles
 import com.example.musicapp.domain.logic.impure.iface.SongFileImport
-import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongCardDataStorage
+import com.example.musicapp.domain.logic.impure.iface.SongCardDataRead
 import com.example.musicapp.domain.logic.pure.parseSearchQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -28,14 +30,14 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class MainVm @Inject constructor(
     private val search: SongSearch,
-    private val songCardDataStorage: SongCardDataStorage,
+    private val songCardDataRepo: SongCardDataRead,
     private val songFileImport: SongFileImport,
 ) : ViewModel() {
     private var loadingObjects by mutableIntStateOf(0)
-    val isLoading by derivedStateOf { loadingObjects == 0 }
+    val isLoading by derivedStateOf { loadingObjects > 0 }
 
     var songs by mutableStateOf(emptyList<SongId>())
-    val cards by derivedStateOf { songCardDataStorage.get(songs) }
+        private set
     var searchQuery by mutableStateOf("")
         private set
 
@@ -50,6 +52,8 @@ class MainVm @Inject constructor(
             songs = search.search(parsedQuery)
         }
     }
+
+    fun loadCard(song: SongId): StateFlow<SongCardData> = songCardDataRepo.getAsFlow(song)
 
     private fun load(context: CoroutineContext = Dispatchers.IO, block: () -> Unit) {
         viewModelScope.launch(context) {
@@ -77,7 +81,7 @@ class MainVm @Inject constructor(
     }
 
     fun getPlaylistFrom(id: SongId): List<SongId> {
-        return songs.dropWhile { it != id }
+        return songs
     }
 
     private fun editMeta(id: SongId) {
@@ -114,7 +118,7 @@ class MainVm @Inject constructor(
         }
     }
 
-    fun reload() {
+    fun refresh() {
         load {
             rescanForFiles()
             search()

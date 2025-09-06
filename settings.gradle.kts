@@ -22,5 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MusicApp"
 include(":app")
-include(":config")
 include(":domain")

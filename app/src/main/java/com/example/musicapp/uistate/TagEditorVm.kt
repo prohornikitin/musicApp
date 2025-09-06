@@ -6,8 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.musicapp.domain.data.MetaKey
 import com.example.musicapp.domain.data.SongId
-import com.example.musicapp.domain.logic.impure.iface.storage.read.MetaStorage
-import com.example.musicapp.domain.logic.impure.iface.storage.v2.read.SongThumbnailStorage
+import com.example.musicapp.domain.logic.impure.iface.storage.l1.read.MetaStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -5,15 +5,15 @@ import com.example.musicapp.domain.logic.pure.sql.Table
 object Tables {
     object Song : Table("song") {
         val id = col("song_id")
-        val musicFilePath = col("music_file_id")
-        val iconId = col("icon_id")
+        val musicFilePath = col("file_path")
+        val iconPath = col("icon_path")
 
         override val createSql: String =
             "CREATE TABLE $Song (" +
                 "$id INTEGER PRIMARY KEY," +
-                "$musicFilePath INTEGER NOT NULL UNIQUE," +
-                "$iconId INTEGER," +
-                "FOREIGN KEY ($iconId) REFERENCES $IconFile (${IconFile.id})" +
+                "$musicFilePath TEXT NOT NULL UNIQUE," +
+                "$iconPath INTEGER," +
+                "FOREIGN KEY ($iconPath) REFERENCES $IconFile (${IconFile.id})" +
             ")"
     }
 
@@ -28,8 +28,7 @@ object Tables {
                 "$id INTEGER PRIMARY KEY," +
                 "$songId INTEGER NOT NULL," +
                 "$key TEXT NOT NULL," +
-                "$value TEXT NOT NULL," +
-                "PRIMARY KEY($songId, $key)" +
+                "$value TEXT NOT NULL" +
             "); " +
             "CREATE INDEX ${Meta}_$songId ON $Meta ($songId);"
     }
@@ -41,7 +40,7 @@ object Tables {
 
         override val createSql: String =
             "CREATE TABLE $GenTemplate (" +
-                "$songId INTEGER NOT NULL, $songId" +
+                "$songId INTEGER PRIMARY KEY," +
                 "$main TEXT NOT NULL," +
                 "$sub TEXT NOT NULL" +
             ");"

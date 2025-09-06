@@ -13,10 +13,10 @@ kotlin {
     }
 }
 dependencies {
-    implementation(project(":config"))
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
     testImplementation(libs.junit)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.commons.codec)
 }

@@ -8,13 +8,14 @@ import com.example.musicapp.domain.logic.pure.query.StringArg
 
 fun SQLiteProgram.bindAll(args: List<Arg>) {
     args.forEachIndexed { i, arg ->
+        val argI = i+1
         when(arg) {
-            is BlobArg -> bindBlob(i, arg.data)
-            is StringArg -> bindString(i, arg.data)
+            is BlobArg -> bindBlob(argI, arg.data)
+            is StringArg -> bindString(argI, arg.data)
             is LongArg -> if (arg.data != null) {
-                bindLong(i, arg.data!!)
+                bindLong(argI, arg.data!!)
             } else {
-                bindNull(i)
+                bindNull(argI)
             }
         }
     }

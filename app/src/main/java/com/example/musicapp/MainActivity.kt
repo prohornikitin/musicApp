@@ -35,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.musicapp.domain.data.SongId
 import com.example.musicapp.ui.complex.MainScreen
 import com.example.musicapp.ui.complex.SongCardStyleEditor
 import com.example.musicapp.ui.complex.TagEditorScreen
@@ -121,9 +122,11 @@ class MainActivity : ComponentActivity() {
                         composable<Route.Main> {
                             MainScreen(vm, playerVm, openDrawer)
                         }
-                        composable<Route.TagEditor> { backStackEntry ->
+                        composable<Route.TagEditor>(
+                            typeMap = Route.TagEditor.typeMap
+                        ) { backStackEntry ->
                             val route = backStackEntry.toRoute<Route.TagEditor>()
-                            tagEditorVm.loadForSong(route.id)
+                            tagEditorVm.loadForSong(SongId(route.id))
                             TagEditorScreen(tagEditorVm)
                         }
                         navigation<Route.Settings>(startDestination = Route.Settings.SongCardStyle) {

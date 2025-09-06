@@ -45,31 +45,6 @@ fun parseTemplate(raw: String): Template {
             }
         }
     }
-//    ("$raw#").forEachIndexed { i, c ->
-//        if (inTemplate) {
-//            if (c.isLetter()) {
-//                lastStr.append(c)
-//            } else {
-//                inTemplate = false
-//                val keyStr = lastStr.toString()
-//                entries.add(Template.MetaField(MetaKey(keyStr)))
-//                lastStr = StringBuilder()
-//                if (c == '#') {
-//                    inTemplate = true
-//                } else {
-//                    lastStr.append(c)
-//                }
-//            }
-//        } else if (c == '#') {
-//            inTemplate = true
-//            if (lastStr.isNotEmpty()) {
-//                entries.add(Template.PlainText(lastStr.toString()))
-//            }
-//            lastStr = StringBuilder()
-//        } else {
-//            lastStr.append(c)
-//        }
-//    }
     return Template(entries)
 }
 

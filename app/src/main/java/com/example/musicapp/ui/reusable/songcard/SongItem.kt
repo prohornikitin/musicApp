@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.example.config.SongCardStyle
+import com.example.musicapp.domain.data.SongCardStyle
 import com.example.musicapp.R
 import com.example.musicapp.data.SongOption
 import com.example.musicapp.domain.data.SongCardData

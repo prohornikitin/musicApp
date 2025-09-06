@@ -4,7 +4,7 @@ import com.example.musicapp.domain.logic.pure.query.SimpleWriteDbQuery
 
 interface DbSetupSql {
     val currentVersion: Int
-        get() = 0
+        get() = 1
 
     val tables: List<Table>
 

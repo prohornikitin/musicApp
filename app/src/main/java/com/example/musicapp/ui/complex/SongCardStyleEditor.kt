@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import com.example.config.SongCardStyle.IconVisibility
+import com.example.musicapp.domain.data.SongCardStyle.IconVisibility
 import com.example.musicapp.R
 import com.example.musicapp.domain.data.SongCardData
 import com.example.musicapp.domain.data.SongId

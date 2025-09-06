@@ -1,5 +1,7 @@
 package com.example.musicapp.domain.logic.impure.impl
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -21,3 +23,8 @@ fun extractMediaMetadata(songCard: SongCardData, meta: Map<MetaKey, String>) = M
 
 val MediaItem.songId: SongId?
     get() = mediaId.toLongOrNull()?.let(::SongId)
+
+
+fun f(context: Context) {
+    context.filesDir
+}

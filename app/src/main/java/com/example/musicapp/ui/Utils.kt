@@ -1,12 +1,11 @@
 package com.example.musicapp.ui
 
-import androidx.compose.material3.DrawerState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.AnnotatedString.Range
-import com.example.config.FontFamily
-import com.example.config.FontStyle
-import com.example.config.RgbaColor
+import com.example.musicapp.domain.data.FontFamily
+import com.example.musicapp.domain.data.FontStyle
+import com.example.musicapp.domain.data.RgbaColor
 import com.example.musicapp.domain.data.Template
 import com.example.musicapp.domain.logic.pure.parseTemplate
 import androidx.compose.ui.text.font.FontFamily as ComposeFontFamily
