@@ -21,5 +21,8 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MusicApp"
-include(":app")
+include(":app_common")
+include(":app:composeApp")
 include(":domain")
+include(":sqlite-android")
+include(":data")

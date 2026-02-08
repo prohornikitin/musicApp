@@ -1,0 +1,17 @@
+package com.example.musicapp.logic.pure.logic.db.sql
+
+import afc.musicapp.domain.logic.pure.sql.Basic.not
+import com.example.musicapp.logic.pure.logic.assertCharSeqEquals
+import kotlin.test.Test
+
+class BasicNotTest {
+    @Test
+    fun not_common() {
+        assertCharSeqEquals("(NOT A)", not("A"))
+    }
+
+    @Test
+    fun not_emptyCondition() {
+        assertCharSeqEquals("", not(""))
+    }
+}

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="app_common-jvm">
+    <output-path>$PROJECT_DIR$/app_common/build/libs</output-path>
+    <root id="archive" name="app_common-jvm.jar">
+      <element id="module-output" name="MusicApp.app_common.jvmMain" />
+    </root>
+  </artifact>
+</component>
