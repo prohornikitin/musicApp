@@ -19,13 +19,13 @@ class Logger(
     fun error(throwable: Throwable) = writeOrSkip(LogLevel.ERROR, tag) { throwable.stackTraceToString() }
 
     private fun writeOrSkip(level: LogLevel, tag: String, msg: String) {
-        if (level.priority >= config.currentLevel.priority) {
+        if (level.priority >= config.level.priority) {
             writer.write(level, tag, msg)
         }
     }
 
     private fun writeOrSkip(level: LogLevel, tag: String, lazyMsg: () -> String) {
-        if (level.priority >= config.currentLevel.priority) {
+        if (level.priority >= config.level.priority) {
             writer.write(level, tag, lazyMsg())
         }
     }

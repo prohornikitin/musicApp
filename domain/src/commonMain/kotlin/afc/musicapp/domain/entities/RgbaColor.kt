@@ -2,7 +2,6 @@ package afc.musicapp.domain.entities
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 class RgbaColor(
     val raw: Long,

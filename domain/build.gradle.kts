@@ -78,7 +78,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.musicapp"
+    namespace = "afc.musicapp.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

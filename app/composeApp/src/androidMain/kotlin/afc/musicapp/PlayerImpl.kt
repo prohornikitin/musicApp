@@ -11,17 +11,18 @@ import androidx.media3.common.Player.STATE_READY
 import afc.musicapp.domain.entities.MetaKey
 import afc.musicapp.domain.entities.SongId
 import afc.musicapp.domain.logic.impure.iface.Dispatchers
-import afc.musicapp.domain.logic.impure.iface.MergedMetaRead
-import afc.musicapp.domain.logic.impure.iface.SongCardDataRetrieve
+import afc.musicapp.domain.logic.impure.iface.storage.read.SongCardDataRead
 import afc.musicapp.domain.logic.impure.iface.player.MusicPlayerState
 import afc.musicapp.domain.logic.impure.iface.player.NextSongStrategy
 import afc.musicapp.domain.logic.impure.iface.player.PlaybackState
 import afc.musicapp.domain.logic.impure.iface.player.Player
 import afc.musicapp.domain.logic.impure.iface.player.RepeatMode
+import afc.musicapp.domain.logic.impure.iface.storage.read.MetaFormatConfigRead
+import afc.musicapp.domain.logic.impure.iface.storage.read.MetaRead
 import afc.musicapp.domain.logic.impure.iface.storage.read.SongFiles
 import afc.musicapp.domain.logic.impure.impl.extractMediaMetadataIfAny
 import afc.musicapp.domain.logic.impure.impl.songId
-import afc.musicapp.domain.toNotNullMap
+import afc.musicapp.domain.logic.pure.mergeMultiValueMetas
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -32,8 +33,9 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class PlayerImpl(
     private val getPlatformPlayer: suspend () -> androidx.media3.common.Player,
-    private val metaStorage: MergedMetaRead,
-    private val songCardDataRepo: SongCardDataRetrieve,
+    private val metaStorage: MetaRead,
+    private val songCardDataRepo: SongCardDataRead,
+    private val metaFormatConfig: MetaFormatConfigRead,
     private val fileStorage: SongFiles,
     dispatchers: Dispatchers
 ) : Player {
@@ -106,7 +108,8 @@ class PlayerImpl(
     }
 
     private suspend fun loadMediaItemData(id: SongId): MediaItem {
-        val meta = metaStorage.getFieldsMerged(
+        val separator = metaFormatConfig.getDelimiter()
+        val meta = metaStorage.getFields(
             id,
             setOf(
                 MetaKey.TITLE,
@@ -115,12 +118,13 @@ class PlayerImpl(
                 MetaKey.ALBUM_ARTIST,
             ),
         )
+        val mergedMeta = mergeMultiValueMetas(meta, separator)
         val songCardData = songCardDataRepo.get(id)
         return MediaItem.Builder()
             .setMediaMetadata(
                 extractMediaMetadataIfAny(
                     songCardData,
-                    meta.toNotNullMap()
+                    mergedMeta
                 )
             )
             .setUri(fileStorage.getById(id)?.toFile()?.toUri())

@@ -30,8 +30,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.lifecycle.runtime.ktx)
-            implementation(libs.taglib)
-            implementation(project(":sqlite-android"))
             implementation(libs.media3.exoplayer)
             implementation(libs.media3.exoplayer.dash)
             implementation(libs.media3.session)
@@ -71,11 +69,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.musicapp"
+    namespace = "afc.musicapp"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.musicapp"
+        applicationId = "afc.musicapp"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

@@ -7,8 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    id("com.google.dagger.hilt.android") version "2.57.1" apply false
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
-    id("de.undercouch.download") version "5.6.0" apply false
-    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.download) apply false
+//    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }

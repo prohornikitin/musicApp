@@ -1,8 +1,9 @@
-package com.example.musicapp.domain
+package afc.musicapp.domain
 
 import okio.FileSystem
 import okio.Path
 
 actual fun Path.isAudio(fileSystem: FileSystem): Boolean {
-    return true
+    val mime = this.toFile().toURI().toURL().openConnection().contentType
+    return mime.startsWith("audio")
 }

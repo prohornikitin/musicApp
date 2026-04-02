@@ -1,13 +1,96 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrains.kotlin.jvm)
+    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlin.serialization)
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
+
 kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+    androidTarget()
+    jvm()
+    jvmToolchain(17)
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+//    macosX64()
+//    macosArm64()
+    linuxX64()
+
+    sourceSets {
+        androidMain.dependencies {
+//            implementation(libs.androidx.activity.compose)
+//            implementation(libs.androidx.core.ktx)
+//            implementation(libs.androidx.lifecycle.runtime.ktx)
+            implementation(project(":sqlite-android"))
+        }
+        commonMain.dependencies {
+            implementation(project(":domain"))
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.rwLock)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.commons.codec)
+            implementation(libs.kodein.core)
+            implementation(libs.okio)
+            implementation(libs.kotlinCrypto.md)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+
+            implementation(libs.ktor.server.core)
+            implementation(libs.ktor.server.cio)
+            implementation(libs.ktor.server.resources)
+            implementation(libs.ktor.server.auth)
+            implementation(libs.ktor.server.content.negotiation)
+
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.kotlinx.serialization.json)
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.taglib)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+//        macosMain.dependencies {
+//            implementation(libs.ktor.client.darwin)
+//        }
+
+        linuxMain.dependencies {
+            implementation(libs.ktor.client.curl)
+        }
+
+    }
+
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations["main"].compileTaskProvider.configure {
+            compilerOptions {
+                freeCompilerArgs.add("-Xexport-kdoc")
+            }
+        }
+    }
+}
+
+android {
+    namespace = "afc.musicapp.data"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }

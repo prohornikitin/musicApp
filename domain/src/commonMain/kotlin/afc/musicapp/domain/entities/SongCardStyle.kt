@@ -5,13 +5,12 @@ import afc.musicapp.domain.entities.codec.FontStyleSerializer
 import afc.musicapp.domain.entities.codec.IconVisibilitySerializer
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class SongCardStyle(
     val iconSizeDp: Int = 40,
     val iconVisibility: IconVisibility = IconVisibility.Show,
     val mainFont: FontConfig = FontConfig(),
-    val bottomFont: FontConfig = FontConfig(color = RgbaColor.Gray),
+    val bottomFont: FontConfig = FontConfig(color = RgbaColor.Companion.Gray),
 ) {
     @Serializable
     data class FontConfig(
@@ -25,7 +24,7 @@ data class SongCardStyle(
 
         val sizeSp: Int = 12,
 
-        val color: RgbaColor = RgbaColor.Black,
+        val color: RgbaColor = RgbaColor.Companion.Black,
     )
 
     @Serializable(with = IconVisibilitySerializer::class)

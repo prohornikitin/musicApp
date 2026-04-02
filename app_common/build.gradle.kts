@@ -12,7 +12,6 @@ plugins {
 }
 
 kotlin {
-
     jvm()
     androidTarget()
     jvmToolchain(17)
@@ -22,7 +21,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "commonMain"
             isStatic = true
         }
     }
@@ -33,6 +32,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(project(":domain"))
+            implementation(project(":data"))
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(compose.foundation)
@@ -45,6 +45,8 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.kodein.core)
             implementation(libs.kodein.compose)
+            implementation(libs.kotlinx.coroutines.core)
+            api(libs.androidx.lifecycle.viewmodel)
 //            androidTestImplementation(libs.androidx.junit)
 //            androidTestImplementation(libs.androidx.espresso.core)
 //            debugImplementation(libs.androidx.ui.tooling)
@@ -64,7 +66,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.musicapp"
+    namespace = "afc.musicapp.app_common"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

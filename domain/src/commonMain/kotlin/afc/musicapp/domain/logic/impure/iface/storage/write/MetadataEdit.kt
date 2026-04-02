@@ -4,5 +4,5 @@ import afc.musicapp.domain.entities.MetaKey
 import afc.musicapp.domain.entities.SongId
 
 interface MetadataEdit {
-    suspend fun replaceMeta(id: SongId, data: List<Pair<MetaKey, String>>): SongId?
+    suspend fun replaceAllTagsForSong(song: SongId, tags: List<Pair<MetaKey, String>>)
 }

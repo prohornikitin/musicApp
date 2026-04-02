@@ -19,18 +19,16 @@ class ConfigParam<T: Any> internal constructor(
             return ConfigParam(key, default, codec)
         }
 
-        val templates =  create(
+        val templates = create(
             "templates",
             SongCardTemplates(
                 parseTemplate("#TITLE"),
                 parseTemplate("#ARTIST"),
             ),
-            TemplatesCodec
+            TemplatesCodec,
         )
-//        val mainTemplate =  create("main_template", parseTemplate("#TITLE"), TemplateCodec)
-//        val subTemplate =   create("sub_template", parseTemplate("#ARTIST"), TemplateCodec)
         val metaDelimiter = create("meta_delimiter", "/", StringCodec)
-        @Suppress("unchecked")
-        val musicFolders =  create<Optional<Path>>("music_folder", Optional.Companion.none(), OptionalPathCodec as ConfigCodec<Optional<Path>>) //TODO: platform-specific default, how?
+        @Suppress("UNCHECKED_CAST")
+        val musicFolder =  create("music_folder", Optional.Companion.none(), OptionalPathCodec as ConfigCodec<Optional<Path>>) //TODO: platform-specific default, how?
     }
 }

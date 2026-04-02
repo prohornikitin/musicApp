@@ -3,23 +3,10 @@ package afc.musicapp.domain
 import afc.musicapp.domain.entities.RgbaColor
 
 
-fun StringBuilder.surroundedBy(surrounded: String, block: StringBuilder.() -> Unit) {
+inline fun StringBuilder.surroundedBy(surrounded: String, block: StringBuilder.() -> Unit) {
     append(surrounded)
     block()
     append(surrounded)
-}
-
-fun <T> Collection<T>.joinToSb(
-    builder: StringBuilder,
-    separator: String,
-    addItem: StringBuilder.(T) -> Unit
-) {
-    this.forEachIndexed { index, item ->
-        builder.addItem(item)
-        if(index != size-1) {
-            builder.append(separator)
-        }
-    }
 }
 
 

@@ -40,4 +40,7 @@
     <string name="tag_editor">Tag Editor</string>
     <string name="error_tag_already_exists">Tag already exists!</string>
     <string name="error_edit_non_existent_tag">Cannot edit non-existent tag</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="do_you_want_to_delete_it">Do you want to delete %1$s?</string>
+    <string name="delete_file">Delete file</string>
 </resources>

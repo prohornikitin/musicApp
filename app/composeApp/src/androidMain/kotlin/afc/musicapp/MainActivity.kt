@@ -15,8 +15,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import afc.musicapp.ui.App
-import afc.musicapp.uistate.vm.MainVm
+import afc.musicapp.app_common.ui.App
+import afc.musicapp.app_common.uistate.vm.MainVm
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.bindProvider
