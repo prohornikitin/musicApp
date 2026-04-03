@@ -11,7 +11,7 @@ object MetaMapping {
         { MetaKey(getString(1)) },
     )
     fun get(key: String) = getWithoutArgs.withArgs(
-        Arg.Companion.of(key),
+        Arg.of(key),
     )
 
 
@@ -19,6 +19,6 @@ object MetaMapping {
         "INSERT OR REPLACE INTO ${Tables.MetaKeyMappings} (${Tables.MetaKeyMappings.key}, ${Tables.MetaKeyMappings.value}) VALUES (?,?)"
     )
     fun put(key: String, map: MetaKey) = putWithoutArgs.withArgs(
-        Arg.Companion.of(key), Arg.Companion.of(map.raw),
+        Arg.of(key), Arg.of(map.raw),
     )
 }

@@ -36,7 +36,6 @@ androidx-runner = { module = "androidx.test:runner", version.ref = "androidTest"
 androidx-core = { module = "androidx.test:core", version.ref = "androidTest" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "androidTest" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqliteVersion" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
@@ -70,8 +69,6 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-curl = { group = "io.ktor", name = "ktor-client-curl", version.ref = "ktor" }
-ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
-ktor-client-winhttp = { group = "io.ktor", name = "ktor-client-winhttp", version.ref = "ktor" }
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-auth = { group = "io.ktor", name = "ktor-server-auth", version.ref = "ktor" }
 ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor" }
@@ -80,9 +77,6 @@ ktor-server-content-negotiation = { group = "io.ktor", name = "ktor-server-conte
 ktor-server-cio = { group = "io.ktor", name = "ktor-server-cio", version.ref="ktor" }
 kodein-core = { group = "org.kodein.di", name = "kodein-di", version.ref = "kodeinVersion" }
 kodein-compose = { group = "org.kodein.di", name = "kodein-di-framework-compose", version.ref = "kodeinVersion" }
-kodein-iosArm64 = { group = "org.kodein.di", name = "kodein-di-iosarm64", version.ref = "kodeinVersion" }
-kodein-iosX64 = { group = "org.kodein.di", name = "kodein-di-iosx64", version.ref = "kodeinVersion" }
-kodein-iosSimulatorArm64 = { group = "org.kodein.di", name = "kodein-di-iossimulatorarm64", version.ref = "kodeinVersion" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okioVersion" }
 kotlinCrypto-md = { group = "org.kotlincrypto.hash", name = "md", version.ref = "kotlinCryptoVersion" }
 

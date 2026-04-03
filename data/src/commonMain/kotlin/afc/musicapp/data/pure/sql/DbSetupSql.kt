@@ -4,7 +4,6 @@ import afc.musicapp.data.impure.iface.db.query.SimpleWriteDbQuery
 
 interface DbSetupSql {
     val currentVersion: Int
-        get() = 1
 
     val tables: List<Table>
 

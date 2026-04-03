@@ -2,12 +2,10 @@ package afc.musicapp.data.pure.sql.mainDb
 
 import afc.musicapp.domain.entities.SongCardText
 import afc.musicapp.domain.entities.SongId
-import afc.musicapp.domain.escapeSqlString
 import afc.musicapp.data.impure.iface.db.query.Arg
 import afc.musicapp.data.impure.iface.db.query.SelectListDbQuery
 import afc.musicapp.data.impure.iface.db.query.SimpleWriteDbQuery
 import afc.musicapp.data.pure.sql.Basic.inClause
-import afc.musicapp.domain.surroundedBy
 
 object Templates {
     fun updateGeneratedTemplates(map: Map<SongId, SongCardText>) = SimpleWriteDbQuery(
@@ -27,42 +25,20 @@ object Templates {
             append(',')
             append(Tables.GenTemplate.subLowercase)
             append(") VALUES (?,?,?,?,?)")
-            (2..map.entries.size).forEach {
+            repeat(map.entries.size - 1) {
                 append(",(?,?,?,?,?)")
             }
         },
         map.flatMap {
             listOf(
-                Arg.Companion.of(it.key.raw),
-                Arg.Companion.of(it.value.main),
-                Arg.Companion.of(it.value.sub),
-                Arg.Companion.of(it.value.main.lowercase()),
-                Arg.Companion.of(it.value.sub.lowercase()),
+                Arg.of(it.key.raw),
+                Arg.of(it.value.main),
+                Arg.of(it.value.sub),
+                Arg.of(it.value.main.lowercase()),
+                Arg.of(it.value.sub.lowercase()),
             )
         }
     )
-
-    fun insertNewTemplate(id: SongId, main: String, sub: String) = buildString {
-        append("INSERT INTO ")
-        append(Tables.GenTemplate)
-        append(" (")
-        append(Tables.GenTemplate.songId)
-        append(',')
-        append(Tables.GenTemplate.main)
-        append(',')
-        append(Tables.GenTemplate.sub)
-        append(") VALUES (")
-        append(id.raw)
-        append(',')
-        surroundedBy("'") {
-            append(main.escapeSqlString())
-        }
-        append(',')
-        surroundedBy("'") {
-            append(sub.escapeSqlString())
-        }
-        append(')')
-    }
 
     private val removeTemplateWithoutArgs = SimpleWriteDbQuery(
         buildString {
@@ -78,7 +54,7 @@ object Templates {
         Arg.of(song.raw)
     )
 
-    fun getSongCardTextFor(ids: List<SongId>) = SelectListDbQuery<Pair<SongId, SongCardText>>(
+    fun getSongCardTextFor(ids: List<SongId>) = SelectListDbQuery(
         if (ids.isEmpty()) {
             ""
         } else buildString {

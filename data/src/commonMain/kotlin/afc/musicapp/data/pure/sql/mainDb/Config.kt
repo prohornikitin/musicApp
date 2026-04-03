@@ -10,13 +10,13 @@ object Config {
         { getString(0) },
     )
     fun getValue(key: String) = getValueWithoutArgs.withArgs(
-        Arg.Companion.of(key)
+        Arg.of(key)
     )
 
     private val setValueWithoutArgs = SimpleWriteDbQuery(
         "REPLACE INTO ${Tables.KvConfig} (${Tables.KvConfig.key}, ${Tables.KvConfig.value}) VALUES (?,?)"
     )
     fun setValue(key: String, value: String) = setValueWithoutArgs.withArgs(
-        Arg.Companion.of(key), Arg.Companion.of(value)
+        Arg.of(key), Arg.of(value)
     )
 }

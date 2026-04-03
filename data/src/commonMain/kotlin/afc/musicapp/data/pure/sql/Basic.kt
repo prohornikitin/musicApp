@@ -1,6 +1,5 @@
 package afc.musicapp.data.pure.sql
 
-import afc.musicapp.domain.surroundedBy
 import kotlin.text.isEmpty
 
 object Basic {

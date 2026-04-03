@@ -9,19 +9,19 @@ import afc.musicapp.data.impure.iface.db.query.SimpleWriteDbQuery
 import afc.musicapp.data.pure.sql.Basic.inClause
 
 object Songs {
-    val countAll = SelectOneDbQuery<Long>(
+    val countAll = SelectOneDbQuery(
         "SELECT COUNT(1) FROM ${Tables.Song}",
         { getLong(0) },
     )
 
 
-    private val getFileBySongIdWithoutArgs = SelectOneDbQuery<String>(
+    private val getFileBySongIdWithoutArgs = SelectOneDbQuery(
         "SELECT ${Tables.Song.musicFilePath} FROM ${Tables.Song} WHERE ${Tables.Song.id}=?",
         { getString(0) },
     )
 
     fun getFileBySongId(id: SongId) = getFileBySongIdWithoutArgs.withArgs(
-        Arg.Companion.of(id.raw)
+        Arg.of(id.raw)
     )
 
 
@@ -54,7 +54,7 @@ object Songs {
     )
 
     fun getIconPath(id: SongId): SelectOneDbQuery<String?> = getIconPathWithoutArg.withArgs(
-        Arg.Companion.of(id.raw)
+        Arg.of(id.raw)
     )
 
 
@@ -63,7 +63,7 @@ object Songs {
     )
 
     fun insertSongFileIfNotExists(filePath: String) = insertSongWithoutArgs.withArgs(
-        Arg.Companion.of(filePath)
+        Arg.of(filePath)
     )
 
 
@@ -72,7 +72,7 @@ object Songs {
     )
 
     fun getSongIdByFile(path: String) = getSongIdByFileWithoutArgs.withArgs(
-        Arg.Companion.of(path)
+        Arg.of(path)
     )
 
 
@@ -81,8 +81,8 @@ object Songs {
     )
 
     fun updateSongIconPath(songId: SongId, iconPath: String?) = updateSongIconWithoutArgs.withArgs(
-        Arg.Companion.of(iconPath),
-        Arg.Companion.of(songId.raw)
+        Arg.of(iconPath),
+        Arg.of(songId.raw)
     )
 
 
@@ -90,5 +90,5 @@ object Songs {
         "DELETE FROM ${Tables.Song} WHERE ${Tables.Song.id}=?"
     )
 
-    fun removeFileFromDb(id: SongId) = removeFileFromDbWithoutArgs.withArgs(Arg.Companion.of(id.raw))
+    fun removeFileFromDb(id: SongId) = removeFileFromDbWithoutArgs.withArgs(Arg.of(id.raw))
 }

@@ -10,7 +10,7 @@ import afc.musicapp.data.pure.sql.Basic.joinToSb
 import afc.musicapp.domain.surroundedBy
 
 object SongsQuery {
-    val queryAll = SelectListDbQuery<SongId>(
+    val queryAll = SelectListDbQuery(
         "SELECT ${Tables.Song.id} FROM ${Tables.Song}",
         { SongId(getLong(0)) }
     )

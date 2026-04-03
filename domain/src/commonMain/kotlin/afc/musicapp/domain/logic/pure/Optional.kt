@@ -19,10 +19,6 @@ class Optional<out T : Any> private constructor(
         }
     }
 
-    fun <K: Any> flatMap(f: (T) -> Optional<K>) {
-        return
-    }
-
     companion object {
         fun <T : Any> none() = Optional<T>(null)
         fun <T : Any> some(value: T) = Optional<T>(value)

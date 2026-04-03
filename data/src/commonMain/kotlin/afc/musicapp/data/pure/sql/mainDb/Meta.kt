@@ -11,7 +11,7 @@ import afc.musicapp.data.pure.sql.Basic.joinToSb
 import afc.musicapp.domain.surroundedBy
 
 object Meta {
-    fun getAllMetas(songs: Collection<SongId>) = SelectListDbQuery<Triple<SongId, MetaKey, String>>(
+    fun getAllMetas(songs: Collection<SongId>) = SelectListDbQuery(
         if (songs.isEmpty()) {
             ""
         } else buildString {
@@ -32,7 +32,7 @@ object Meta {
 
     fun getMetasForAllSongsPageableBySong(keys: Collection<MetaKey>, page: Long, pageSize: Long = 100): SelectListDbQuery<Triple<SongId, MetaKey, String>> {
 //        assert(pageSize <= 0)
-        return SelectListDbQuery<Triple<SongId, MetaKey, String>>(
+        return SelectListDbQuery(
             if (keys.isEmpty()) {
                 ""
             } else buildString {
@@ -58,7 +58,7 @@ object Meta {
                 append(Tables.Meta.songId.fullName)
                 append(" WHERE ")
                 append(Tables.Meta.key)
-                inClause<MetaKey>(keys) {
+                inClause(keys) {
                     surroundedBy("'") {
                         it.raw
                     }
@@ -69,7 +69,7 @@ object Meta {
     }
 
     fun getMetas(songs: Collection<SongId>, metas: Collection<MetaKey>) =
-        SelectListDbQuery<Triple<SongId, MetaKey, String>>(
+        SelectListDbQuery(
             if (metas.isEmpty() || songs.isEmpty()) {
                 ""
             } else buildString {
@@ -83,7 +83,7 @@ object Meta {
                 append(Tables.Meta)
                 append(" WHERE ")
                 append(Tables.Meta.key)
-                inClause<MetaKey>(metas) {
+                inClause(metas) {
                     surroundedBy("'") {
                         append(it.raw)
                     }
@@ -99,44 +99,6 @@ object Meta {
             { Triple(SongId(getLong(0)), MetaKey(getString(1)), getString(2)) }
         )
 
-    fun removeMetaByKeys(id: SongId, keys: Collection<MetaKey>) = SimpleWriteDbQuery(
-        buildString {
-            append("DELETE FROM ")
-            append(Tables.Meta)
-            append(" WHERE ")
-            append(Tables.Meta.songId)
-            append('=')
-            append(id.raw)
-            if (keys.isEmpty()) {
-                append(" AND ")
-                append(Tables.Meta.key)
-                inClause<MetaKey>(keys) {
-                    append("?")
-                }
-            }
-        },
-        keys.map { Arg.Companion.of(it.raw) }
-    )
-
-    fun removeMetaExceptForKeys(id: SongId, remainedKeys: List<MetaKey>) = buildString {
-        append("DELETE FROM ")
-        append(Tables.Meta)
-        append(" WHERE ")
-        append(Tables.Meta.songId)
-        append('=')
-        append(id.raw)
-        if (remainedKeys.isEmpty()) {
-            append(" AND ")
-            append(Tables.Meta.key)
-            append(" NOT ")
-            inClause(remainedKeys) {
-                surroundedBy("'") {
-                    append(it.raw)
-                }
-            }
-        }
-    }
-
 
     fun insertMeta(song: SongId, metas: List<Pair<MetaKey, String>>) = InsertDbQuery(
         if (metas.isEmpty()) {
@@ -149,13 +111,13 @@ object Meta {
                 append(",?,?)")
             }
         },
-        metas.flatMap { listOf(Arg.Companion.of(it.first.raw), Arg.Companion.of(it.second)) }
+        metas.flatMap { listOf(Arg.of(it.first.raw), Arg.of(it.second)) }
     )
 
     private val clearSongMetaWithoutArgs = SimpleWriteDbQuery(
         "DELETE FROM ${Tables.Meta} WHERE ${Tables.Song.id}=?"
     )
     fun clearMeta(songId: SongId) = clearSongMetaWithoutArgs.withArgs(
-        Arg.Companion.of(songId.raw)
+        Arg.of(songId.raw)
     )
 }

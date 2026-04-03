@@ -1,6 +1,6 @@
 package afc.musicapp.data.pure.sql
 
-class Column(private val table: String, val column: String) {
+class Column(table: String, val column: String) {
     override fun toString() = column
     val fullName = "$table.$column"
 }
