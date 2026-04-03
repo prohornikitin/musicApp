@@ -4,13 +4,14 @@ import afc.musicapp.data.pure.sql.mainDb.MainDbSetup
 import android.annotation.SuppressLint
 import afc.musicapp.domain.logic.impure.iface.Dispatchers
 import afc.musicapp.domain.logic.impure.impl.logger.Logger
+import afc.musicapp.domain.logic.pure.logger.withClassTag
 import android.content.Context
 
 class MainDb private constructor(
     context: Context,
     logger: Logger,
     dispatchers: Dispatchers,
-) : SqliteDb(context, "songs.db", MainDbSetup, logger, dispatchers) {
+) : SqliteDb(context, "songs.db", MainDbSetup, logger.withClassTag<MainDb>(), dispatchers) {
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: MainDb? = null

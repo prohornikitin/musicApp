@@ -10,30 +10,23 @@ import afc.musicapp.data.impure.iface.db.query.SimpleWriteDbQuery
 import afc.musicapp.data.impure.iface.db.query.SqlDbQuery
 import afc.musicapp.data.pure.sql.mainDb.MainDbSetup
 import android.content.Context
-import android.database.Cursor
 import afc.musicapp.domain.logic.impure.iface.Dispatchers
 import afc.musicapp.domain.logic.impure.impl.logger.Logger
-import afc.musicapp.domain.logic.pure.logger.withClassTag
 import com.mayakapps.rwmutex.ReadWriteMutex
 import com.mayakapps.rwmutex.withReadLock
 import com.mayakapps.rwmutex.withWriteLock
 import io.requery.android.database.sqlite.SQLiteDatabase
 import io.requery.android.database.sqlite.SQLiteOpenHelper
-import io.requery.android.database.sqlite.SQLiteStatement
-//import io.requery.android.database.sqlite.SQLiteDatabase
-//import io.requery.android.database.sqlite.SQLiteOpenHelper
-//import io.requery.android.database.sqlite.SQLiteStatement
 import kotlinx.coroutines.withContext
 
 
 abstract class SqliteDb(
     context: Context,
-    db: String,
+    fileName: String,
     val sql: MainDbSetup,
-    logger: Logger,
+    private val logger: Logger,
     private val dispatchers: Dispatchers,
-) : SQLiteOpenHelper(context, db, null, sql.currentVersion), DbQueryInterpreter {
-    private val logger = logger.withClassTag(this)
+) : SQLiteOpenHelper(context, fileName, null, sql.currentVersion), DbQueryInterpreter {
     private val transactionMutex = ReadWriteMutex()
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -95,17 +88,13 @@ abstract class SqliteDb(
             return@runCatching emptyList()
         }
         val cursorFactory = CustomSelectCursorFactory(query.bindArgs)
-        var cursor: Cursor? = null
-        try {
-            cursor = db.rawQueryWithFactory(cursorFactory, query.sql, null, null)
+        db.rawQueryWithFactory(cursorFactory, query.sql, null, null).use { cursor ->
             val rowWrapper = CursorRowWrapper(cursor)
             val entities = mutableListOf<T>()
             while (cursor.moveToNext()) {
                 entities.add(query.rowProcess(rowWrapper))
             }
             return@runCatching entities
-        } finally {
-            cursor?.close()
         }
     }
 
@@ -113,11 +102,9 @@ abstract class SqliteDb(
         if(query.sql.isEmpty()) {
             return@runCatching null
         }
-        var cursor: Cursor? = null
-        try {
-            val cursorFactory = CustomSelectCursorFactory(query.bindArgs)
-            val db = overrideDb ?: readableDatabase
-            cursor = db.rawQueryWithFactory(cursorFactory, query.sql, null, null)
+        val cursorFactory = CustomSelectCursorFactory(query.bindArgs)
+        val db = overrideDb ?: readableDatabase
+        db.rawQueryWithFactory(cursorFactory, query.sql, null, null).use { cursor ->
             val count = cursor.count
             assert(count <= 1)
             return@runCatching if(count == 1) {
@@ -126,8 +113,6 @@ abstract class SqliteDb(
             } else {
                 null
             }
-        } finally {
-            cursor?.close()
         }
     }
 
@@ -135,19 +120,10 @@ abstract class SqliteDb(
         if (query.sql.isEmpty()) {
             return@runCatching null
         }
-        var statement: SQLiteStatement? = null
-        try {
-            val db = overrideDb ?: writableDatabase
-            statement = db.compileStatement(query.sql)
+        val db = overrideDb ?: writableDatabase
+        db.compileStatement(query.sql).use { statement ->
             statement.bindAll(query.bindArgs)
-            val rowId = statement.executeInsert()
-            return@runCatching if (rowId == -1L) {
-                null
-            } else {
-                rowId
-            }
-        } finally {
-            statement?.close()
+            return@runCatching statement.executeInsert().takeIf { it != -1L }
         }
     }
 
@@ -155,18 +131,14 @@ abstract class SqliteDb(
         if(query.sql.isEmpty()) {
             return@runCatching
         }
-        var statement: SQLiteStatement? = null
-        try {
-            val db = overrideDb ?: writableDatabase
-            statement = db.compileStatement(query.sql)
+        val db = overrideDb ?: writableDatabase
+        db.compileStatement(query.sql).use { statement ->
             statement.bindAll(query.bindArgs)
             statement.execute()
-        } finally {
-            statement?.close()
         }
     }
 
-    private class InnerTransactionFailed() : Exception()
+    private class InnerTransactionFailed : Exception()
 
     private val dbInTransaction = object : DbQueryInterpreter {
         var dbEntity: SQLiteDatabase? = null
