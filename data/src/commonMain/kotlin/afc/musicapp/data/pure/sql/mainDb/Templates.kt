@@ -41,13 +41,7 @@ object Templates {
     )
 
     private val removeTemplateWithoutArgs = SimpleWriteDbQuery(
-        buildString {
-            append("DELETE FROM ")
-            append(Tables.GenTemplate)
-            append("WHERE")
-            append(Tables.GenTemplate.songId)
-            append("=?")
-        },
+        "DELETE FROM ${Tables.GenTemplate} WHERE ${Tables.GenTemplate.songId}=?"
     )
 
     fun removeTemplate(song: SongId) = removeTemplateWithoutArgs.withArgs(
