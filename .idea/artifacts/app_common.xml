@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="app_common">
+    <output-path>$PROJECT_DIR$/app_common/build/libs</output-path>
+    <root id="archive" name="app_common.jar">
+      <element id="module-output" name="MusicApp.app_common.androidMain" />
+    </root>
+  </artifact>
+</component>

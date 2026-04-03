@@ -1,4 +1,4 @@
-package com.example.musicapp.logic.pure.logic
+package afc.musicapp.logic.pure.logic
 
 import kotlin.test.Test
 

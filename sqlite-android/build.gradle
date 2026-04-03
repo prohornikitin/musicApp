@@ -2,20 +2,17 @@
 plugins {
     id "de.undercouch.download"
     id "com.android.library"
-    id "com.vanniktech.maven.publish" version "0.30.0"
 }
 
 android {
-    buildToolsVersion = "35.0.1"
     ndkVersion "28.0.13004108"
 
-    compileSdk 35
+    compileSdk = libs.versions.android.compileSdk.get().toInteger()
 
     namespace "io.requery.android.sqlite"
 
     defaultConfig {
-        minSdkVersion 21
-
+        minSdk = libs.versions.android.minSdk.get().toInteger()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "proguard-rules.pro"
         ndk {
@@ -23,16 +20,13 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-    }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+//        }
+//    }
 
-    lintOptions {
-        abortOnError false
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -42,6 +36,9 @@ android {
         ndkBuild {
             path "src/main/jni/Android.mk"
         }
+    }
+    lint {
+        abortOnError false
     }
 }
 

@@ -1,4 +1,4 @@
-package com.example.musicapp.logic.pure.logic
+package afc.musicapp.logic.pure.logic
 
 import afc.musicapp.domain.entities.MetaKey
 import afc.musicapp.domain.entities.SearchQuery

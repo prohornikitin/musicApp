@@ -1,33 +1,32 @@
 [versions]
-agp = "8.9.3"
+agp = "9.1.0"
 androidTest = "1.7.0"
 kotlin = "2.3.20"
-coreKtx = "1.17.0"
+coreKtx = "1.18.0"
 junit = "4.13.2"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.4"
-composeBom = "2026.02.01"
-datastore = "1.2.0"
-media3 = "1.9.2"
+activityCompose = "1.13.0"
+composeBom = "2026.03.01"
+datastore = "1.2.1"
+media3 = "1.10.0"
 sqliteVersion = "2.6.2"
 taglib = "1.0.0-alpha25"
-kotlinxSerialization = "1.9.0"
+kotlinxSerialization = "1.10.0"
 kotlinxCoroutines = "1.10.2"
-nav = "2.9.1"
-common-codec = "1.19.0"
-material3 = "1.8.0"
-materialIcons = "1.7.0"
-composeHotReload = "1.0.0-rc02"
-composeMultiplatform = "1.9.1"
+nav = "2.9.2"
+common-codec = "1.21.0"
+material3 = "1.9.0"
+materialIcons = "1.7.3"
+compose = "1.10.3"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-ktor = "3.2.2"
-kodeinVersion = "7.28.0"
-okioVersion = "3.16.0"
+ktor = "3.4.2"
+kodeinVersion = "7.31.0"
+okioVersion = "3.17.0"
 kotlinCryptoVersion = "0.8.0"
 rwLockVersion = "1.0.0"
-androidxLifecycleVersion = "2.9.6"
+androidxLifecycleVersion = "2.10.0"
 ksp = "2.3.6"
 
 [libraries]
@@ -43,6 +42,10 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore-preferenc
 taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+compose-runtime = { group = "org.jetbrains.compose.runtime", name="runtime", version.ref= "compose" }
+compose-ui = { group = "org.jetbrains.compose.ui", name="ui", version.ref= "compose" }
+compose-foundation = { group = "org.jetbrains.compose.foundation", name="foundation", version.ref= "compose" }
+compose-resources = { group = "org.jetbrains.compose.components", name="components-resources", version.ref= "compose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -85,12 +88,10 @@ kotlinCrypto-md = { group = "org.kotlincrypto.hash", name = "md", version.ref = 
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
-composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
-#jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-download = { id = "de.undercouch.download", version = "5.6.0"}
+download = { id = "de.undercouch.download", version = "5.6.0" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }

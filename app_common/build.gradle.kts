@@ -1,19 +1,17 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
+//    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp")
-//    id("com.google.dagger.hilt.android")
 }
 
 kotlin {
     jvm()
-    androidTarget()
     jvmToolchain(17)
     listOf(
         iosX64(),
@@ -27,16 +25,14 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-        }
         commonMain.dependencies {
+            implementation(libs.kotlin.stdlib)
             implementation(project(":domain"))
             implementation(project(":data"))
-            implementation(compose.runtime)
-            implementation(compose.ui)
-            implementation(compose.foundation)
-            implementation(compose.components.resources)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.resources)
             implementation(libs.androidx.datastore)
             implementation(project.dependencies.platform(libs.androidx.compose.bom))
             implementation(libs.androidx.material3)
@@ -63,13 +59,11 @@ kotlin {
             implementation(libs.kotlinx.coroutines.swing)
         }
     }
-}
 
-android {
-    namespace = "afc.musicapp.app_common"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
+    configure<KotlinMultiplatformAndroidLibraryTarget> {
+        namespace = "afc.musicapp.app_common"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources.enable = true
     }
 }

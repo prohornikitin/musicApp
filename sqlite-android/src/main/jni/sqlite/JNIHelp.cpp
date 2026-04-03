@@ -195,7 +195,7 @@ int jniThrowIOException(C_JNIEnv* env, int errnum) {
 }
 
 const char* jniStrError(int errnum, char* buf, size_t buflen) {
-#if __GLIBC__
+#if defined(__USE_GNU) && __ANDROID_API__ >= 23
     // Note: glibc has a nonstandard strerror_r that returns char* rather than POSIX's int.
     // char *strerror_r(int errnum, char *buf, size_t n);
     return strerror_r(errnum, buf, buflen);

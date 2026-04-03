@@ -11,6 +11,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -21,8 +24,10 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MusicApp"
-include(":app_common")
-include(":app:composeApp")
-include(":domain")
-include(":sqlite-android")
-include(":data")
+include(
+    ":app_common",
+    ":app:androidApp",
+    ":domain",
+    ":sqlite-android",
+    ":data"
+)

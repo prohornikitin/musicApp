@@ -1,12 +1,13 @@
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+
 plugins {
     id("com.google.devtools.ksp")
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
-    androidTarget()
     jvm()
     jvmToolchain(17)
     iosX64()
@@ -75,13 +76,11 @@ kotlin {
             }
         }
     }
-}
 
-android {
-    namespace = "afc.musicapp.domain"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
+    configure<KotlinMultiplatformAndroidLibraryTarget> {
+        namespace = "afc.musicapp.domain"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+

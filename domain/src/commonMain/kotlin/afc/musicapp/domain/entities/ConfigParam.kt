@@ -29,6 +29,6 @@ class ConfigParam<T: Any> internal constructor(
         )
         val metaDelimiter = create("meta_delimiter", "/", StringCodec)
         @Suppress("UNCHECKED_CAST")
-        val musicFolder =  create("music_folder", Optional.Companion.none(), OptionalPathCodec as ConfigCodec<Optional<Path>>) //TODO: platform-specific default, how?
+        val musicFolder =  create("music_folder", Optional.none(), OptionalPathCodec as ConfigCodec<Optional<Path>>) //TODO: platform-specific default, how?
     }
 }
