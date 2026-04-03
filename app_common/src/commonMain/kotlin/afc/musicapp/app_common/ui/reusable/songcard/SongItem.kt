@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import afc.musicapp.domain.entities.SongCardData
 import afc.musicapp.domain.entities.SongCardStyle
+import androidx.compose.ui.Alignment
 import musicapp.app_common.generated.resources.Res
 import musicapp.app_common.generated.resources.options
 import org.jetbrains.compose.resources.stringResource
@@ -47,7 +48,7 @@ fun SongItem(
                 style,
             )
             IconButton(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxHeight().align(Alignment.CenterVertically),
                 onClick = { optionsMenuOpen = true }
             ) {
                 Icon(
