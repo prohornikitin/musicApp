@@ -9,7 +9,7 @@ import afc.musicapp.domain.logic.impure.impl.logger.Logger
 import afc.musicapp.domain.logic.pure.logger.withClassTag
 
 class SongCardStyleEditorVm constructor(defaultLogger: Logger) : ViewModel() {
-    private val logger = defaultLogger.withClassTag(this)
+    private val logger = defaultLogger.withClassTag<SongCardStyleEditorVm>()
     var config by mutableStateOf(SongCardStyle())
 
     fun onSave() {

@@ -16,7 +16,7 @@ class EditorWithHistory<V, C : EditorWithHistory.Companion.Change<V, E>, E : Any
         }
     }
 
-    private val logger = globalLogger.withClassTag(this)
+    private val logger = globalLogger.withClassTag<EditorWithHistory<V, C, E>>()
     private val history = mutableListOf<C>()
     private var nextChangeIndex = 0
 

@@ -25,7 +25,7 @@ class ThumbnailStorageImpl(
 ) : ThumbnailStorage {
     private val cachedPaths: ConcurrentMap<SongId, Optional<Path>> = ConcurrentMap()
     private val cachedData: ConcurrentMap<Path, ByteArray> = ConcurrentMap()
-    private val logger = rawLogger.withClassTag(this)
+    private val logger = rawLogger.withClassTag<ThumbnailStorageImpl>()
 
 
     override suspend fun getRawData(song: SongId): ByteArray? = withContext(dispatchers.io) {

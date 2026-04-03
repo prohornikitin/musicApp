@@ -23,7 +23,7 @@ class TagEditorVm constructor(
     globalLogger: Logger,
     dispatchers: Dispatchers,
 ) : BaseVm(dispatchers) {
-    private val logger = globalLogger.withClassTag(this)
+    private val logger = globalLogger.withClassTag<TagEditorVm>()
 
     private val errorRes by mutableStateOf<Resource?>(null)
 

@@ -12,7 +12,7 @@ class LowLevelConfigImpl constructor(
     private val cache: ConfigCache,
     logger: Logger,
 ) : LowLevelConfig {
-    private val logger = logger.withClassTag(this)
+    private val logger = logger.withClassTag<LowLevelConfig>()
 
     override suspend fun <T : Any> put(storage: ConfigStorage, param: ConfigParam<T>, value: T) {
         cache.put(param, value)
